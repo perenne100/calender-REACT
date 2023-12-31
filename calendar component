@@ -1,0 +1,73 @@
+import React, { useState } from 'react';
+
+const Calendar = () => {
+  const [date, setDate] = useState(new Date());
+
+  const daysInMonth = (year, month) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (year, month) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const renderCalendar = () => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const totalDays = daysInMonth(year, month);
+    const firstDay = getFirstDayOfMonth(year, month);
+
+    const days = [];
+    let dayCounter = 1;
+
+    for (let i = 0; i < 6; i++) {
+      const week = [];
+      for (let j = 0; j < 7; j++) {
+        if ((i === 0 && j < firstDay) || dayCounter > totalDays) {
+          week.push(<td key={`${i}-${j}`}></td>);
+        } else {
+          week.push(<td key={`${i}-${j}`}>{dayCounter}</td>);
+          dayCounter++;
+        }
+      }
+      days.push(<tr key={i}>{week}</tr>);
+    }
+
+    return (
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="7">
+              {new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(date)}
+            </th>
+          </tr>
+          <tr>
+            <th>Sun</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+          </tr>
+        </thead>
+        <tbody>{days}</tbody>
+      </table>
+    );
+  };
+
+  return (
+    <div className="calendar">
+      <button onClick={() => setDate(new Date(date.getFullYear(), date.getMonth() - 1))}>
+        Previous Month
+      </button>
+      <button onClick={() => setDate(new Date())}>Today</button>
+      <button onClick={() => setDate(new Date(date.getFullYear(), date.getMonth() + 1))}>
+        Next Month
+      </button>
+      {renderCalendar()}
+    </div>
+  );
+};
+
+export default Calendar;
